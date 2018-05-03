@@ -34,6 +34,7 @@ public class ProductStore {
         return null;
     }
 
+    // колличество товара по id
     public static int getQuantity(int idProduct){
         if (store.containsKey(getProduct(idProduct))){
             return store.get(getProduct(idProduct));

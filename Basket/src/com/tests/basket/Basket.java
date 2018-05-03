@@ -39,10 +39,12 @@ public class Basket {
 
     //    добавление товара
     public void addProductToBasket(int idProduct, int value) {
-        if (value <= ProductStore.getQuantity(idProduct)) {
+        if (value <= ProductStore.getQuantity(idProduct)) {  //наличие товара на складе
             int oldValue = productMap.containsKey(idProduct) ? productMap.get(idProduct) : REMOVE;
             productMap.put(idProduct, value);
             journal.addEventToLog(new Event(State.EDIT_PRODUCT_TO_BASKET, idProduct, oldValue, value));
+        } else {
+            System.out.println("нет столько товара");
         }
     }
 
@@ -84,6 +86,8 @@ public class Basket {
             checkAndRemoveBonusToProduct(idProduct); //удаляем другие бонусы для этого продукта
             bonusMap.put(idBonus, idProduct);
             journal.addEventToLog(new Event(State.EDIT_BONUS_TO_PRODUCT, idBonus, oldIdProduct, idProduct));
+        } else {
+            System.out.println("этот бонус для корзины");
         }
     }
 
@@ -125,7 +129,7 @@ public class Basket {
     public void undo() {
         Event curentEvent = journal.udo();
         if (curentEvent != null) {
-            switch (curentEvent.getState()) {
+            switch (curentEvent.getState()) { // операции с товаром здесь чтобы записи о операциях не попали в лог
                 case EDIT_PRODUCT_TO_BASKET: {
                     productMap.put(curentEvent.getKey(), curentEvent.getValueOld());
                     break;
@@ -164,6 +168,7 @@ public class Basket {
         }
     }
 
+    
     public void printBasket() {
         for (Map.Entry<Integer, Integer> entry : productMap.entrySet()) {
             System.out.println(ProductStore.getProduct(entry.getKey()) + "  :" + entry.getValue());
@@ -179,9 +184,9 @@ public class Basket {
 
         System.out.println(BonusStore.getBonus(bonusId));
 
-//        System.out.println("+++++++++++++++++++++++++++++++++++++++++++");
-//
-//        System.out.println(journal);
+        System.out.println("+++++++++++++++++++++++++++++++++++++++++++");
+
+        System.out.println(journal);
     }
 
     public double printReceipt() {

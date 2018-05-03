@@ -10,7 +10,7 @@ public class Product {
     public Product(String name) {
         this.id = count++;
         this.name = name;
-        price = id*2.4;
+        price = id*2.4;  //наполнение ценой
     }
 
     public int getId() {

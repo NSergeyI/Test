@@ -1,6 +1,5 @@
 package com.tests.basket.journal;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 
 public class Journal {

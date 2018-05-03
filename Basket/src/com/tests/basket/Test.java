@@ -191,7 +191,7 @@ public class Test {
             put(5, 5);
             put(7, 3);
         }}, 2);
-
+        System.out.println("all"+(result?": OK":": NOT OK"));
         return result;
     }
 
