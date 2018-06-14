@@ -1,12 +1,8 @@
 package com.tests.basket;
 
-import com.tests.basket.bonus.Bonus;
-import com.tests.basket.bonus.BonusStore;
-import com.tests.basket.bonus.Type;
-import com.tests.basket.journal.Event;
-import com.tests.basket.journal.Journal;
-import com.tests.basket.journal.State;
-import com.tests.basket.store.ProductStore;
+import com.tests.basket.bonus.*;
+import com.tests.basket.journal.*;
+import com.tests.basket.store.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,25 +13,14 @@ public class Basket {
     private final int REMOVE = -1;               //для журнала маркер: удалить
 
     private Journal journal = new Journal();
-    private Map<Integer, Integer> productMap = new HashMap<>();
-    private Map<Integer, Integer> bonusMap = new HashMap<>();
-    private int bonusId = -1;
+    private Map<Product, Integer> productMap = new HashMap<>();
+    private Map<Bonus, Integer> bonusMap = new HashMap<>();
+    private Bonus bonus;
 
     public Basket() {
         id = count++;
     }
 
-    public Map<Integer, Integer> getProductMap() {
-        return productMap;
-    }
-
-    public Map<Integer, Integer> getBonusMap() {
-        return bonusMap;
-    }
-
-    public int getBonusId() {
-        return bonusId;
-    }
 
     //    добавление товара
     public void addProductToBasket(int idProduct, int value) {
@@ -127,7 +112,7 @@ public class Basket {
     }
 
     public void undo() {
-        Event curentEvent = journal.udo();
+        Event curentEvent = journal.undo();
         if (curentEvent != null) {
             switch (curentEvent.getState()) { // операции с товаром здесь чтобы записи о операциях не попали в лог
                 case EDIT_PRODUCT_TO_BASKET: {
@@ -168,7 +153,7 @@ public class Basket {
         }
     }
 
-    
+
     public void printBasket() {
         for (Map.Entry<Integer, Integer> entry : productMap.entrySet()) {
             System.out.println(ProductStore.getProduct(entry.getKey()) + "  :" + entry.getValue());
@@ -197,8 +182,8 @@ public class Basket {
             for (Map.Entry<Integer, Integer> entryBonus : bonusMap.entrySet()) {
                 if (entry.getKey().equals(entryBonus.getValue())) bonus = entryBonus.getKey();
             }
-            double summ = ProductStore.getProduct(entry.getKey()).getPrice()*entry.getValue()*(100-BonusStore.getBonus(bonus).getPercent())/100;
-            result = result+summ;
+            double summ = ProductStore.getProduct(entry.getKey()).getPrice() * entry.getValue() * (100 - BonusStore.getBonus(bonus).getPercent()) / 100;
+            result = result + summ;
             System.out.printf(ProductStore.getProduct(entry.getKey()).getName() + "  %4.2f%5d       %5d     %5.2f%n",
                     ProductStore.getProduct(entry.getKey()).getPrice(),
                     entry.getValue(),
@@ -207,11 +192,22 @@ public class Basket {
 
 
         }
-        System.out.println("Бонус на корзину :"+(bonusId==-1?"0": BonusStore.getBonus(bonusId).getPercent())+"%");
-        result=result*(100-(bonusId==-1?0: BonusStore.getBonus(bonusId).getPercent()))/100;
-        System.out.printf("ИТОГО :%4.2f",result);
+        System.out.println("Бонус на корзину :" + (bonusId == -1 ? "0" : BonusStore.getBonus(bonusId).getPercent()) + "%");
+        result = result * (100 - (bonusId == -1 ? 0 : BonusStore.getBonus(bonusId).getPercent())) / 100;
+        System.out.printf("ИТОГО :%4.2f", result);
         return result;
 
+    }
+    public Map<Product, Integer> getProductMap() {
+        return productMap;
+    }
+
+    public Map<Bonus, Integer> getBonusMap() {
+        return bonusMap;
+    }
+
+    public Bonus getBonus() {
+        return bonus;
     }
 
 }

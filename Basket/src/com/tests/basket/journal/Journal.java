@@ -2,7 +2,7 @@ package com.tests.basket.journal;
 
 import java.util.ArrayList;
 
-public class Journal {
+public class  Journal {
     private ArrayList<Event> log;
     private int marker;
 
@@ -38,7 +38,7 @@ public class Journal {
         return stringBuilder.toString();
     }
 
-    public Event udo(){
+    public Event undo(){
 //        System.out.println("u:"+ (marker-1));
         return marker>-1? log.get(--marker):null;
     }
@@ -48,3 +48,4 @@ public class Journal {
         return marker<log.size()?log.get(marker++):null;
     }
 }
+
